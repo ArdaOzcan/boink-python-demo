@@ -40,18 +40,20 @@ class ActivationRecord:
 
     """
 
-    def __init__(self, name, nesting_level, parent_record):
+    def __init__(self, name, nesting_level, parent_record, owner=None):
         """Construct an ActivationRecord object.
 
         Args:
             name (str): Name of the procedure that is called.
             nesting_level (int): Nesting level of the activation.
             parent_record (ActivationRecord): Caller of the activation.
+            owner (function_, Optional): Owner of the record, a function. Defaults to None.
         """
 
         self.name = name
         self.nesting_level = nesting_level
         self.parent_record = parent_record
+        self.owner = owner
         self.members = {}
 
     def __setitem__(self, key, value):
@@ -231,13 +233,15 @@ class Interpreter(ASTVisitor):
         func_name = node.var.name
         parent_record = self.call_stack.peek()
 
+        func_symbol = parent_record[node.var.name]
+
         ar = ActivationRecord(
             name=func_name,
             nesting_level=parent_record.nesting_level + 1,
-            parent_record=parent_record
+            parent_record=parent_record,
+            owner=func_symbol
         )
 
-        func_symbol = self.call_stack.peek()[node.var.name]
         arg_decls = func_symbol.args
         passed_args = node.args
 
@@ -250,19 +254,18 @@ class Interpreter(ASTVisitor):
         print(f"------- START OF FUNCTION {func_name} -------")
         print(self.call_stack)
 
-        give_value = None
         for s in func_symbol.val:
-            if type(s) == GiveSyntax:
-                give_value = self.visit(s)
+            self.visit(s)
+            if func_symbol.gave:
                 break
 
-            self.visit(s)
+        func_symbol.gave = True
 
         print(f"-------- END OF FUNCTION {func_name} --------")
         print(self.call_stack)
 
         self.call_stack.pop()
-        return give_value
+        return func_symbol.give_val
 
     def visit_function_syntax(self, node):
         """Define a function in the last activation record.
@@ -272,8 +275,9 @@ class Interpreter(ASTVisitor):
         """
 
         ar = self.call_stack.peek()
-        ar[node.name.val] = function_(
-            node.name.val, node.statements, node.args)
+        ar[node.name.val] = function_(node.name.val,
+                                      node.statements,
+                                      node.args)
 
     def visit_give_syntax(self, node):
         return self.visit(node.expr)
@@ -288,10 +292,10 @@ class Interpreter(ASTVisitor):
             any: Value of the variable.
         """
 
-        varName = node.name
+        var_name = node.name
 
         ar = self.call_stack.peek()
-        var = ar[varName]
+        var = ar[var_name]
 
         return var.val
 
@@ -375,3 +379,13 @@ class Interpreter(ASTVisitor):
         """
 
         return node.val
+
+    def visit_give_syntax(self, node):
+        func_symbol = self.call_stack.peek().owner
+        func_symbol.give(self.visit(node.expr))
+
+    def visit_if_syntax(self, node):
+        preposition_val = self.visit(node.expr)
+        if preposition_val:
+            for s in node.statements:
+                self.visit(s)

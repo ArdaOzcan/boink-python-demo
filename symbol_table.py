@@ -227,7 +227,7 @@ class SymbolTableBuilder(ASTVisitor):
         if not has_give and give_type is not None:
             self.error_handler.error(
                 NoGiveError(f"Function {repr(node.name.val)} doesn't give any value even though it has a give type of {give_type}",
-                              node.get_pos())
+                            node.get_pos())
             )
 
     def visit_binary_operation_syntax(self, node):
@@ -347,10 +347,10 @@ class SymbolTableBuilder(ASTVisitor):
 
         node.var_type = symbol.give_type
 
-        for call_arg_type in node.args:
-            self.visit(call_arg_type)
+        for call_arg in node.args:
+            self.visit(call_arg)
 
-        arg_types = [call_arg_type.get_type() for a in node.args]
+        arg_types = [a.get_type() for a in node.args]
 
         if len(arg_types) > len(symbol.arg_types):
             self.error_handler.error(
@@ -379,13 +379,19 @@ class SymbolTableBuilder(ASTVisitor):
                 f"{'CALL':<15}: Function {symbol.name} called with arguments {symbol.arg_types}")
 
     def visit_give_syntax(self, node):
+        """Check for give type and if give is allowed.
+
+        Args:
+            node (IfSyntax): Syntax node.
+        """
+
         self.visit(node.expr)
         current_function_symbol = self.current_scope.owner
-        
+
         if current_function_symbol is None:
             self.error_handler.error(
                 GiveNotAllowedError(f"'give' is not allowed here because it is not inside of a function",
-                                       node.get_pos())
+                                    node.get_pos())
             )
             return
 
@@ -403,3 +409,20 @@ class SymbolTableBuilder(ASTVisitor):
                 IncompatibleTypesError(f"Type {node.expr.get_type()} and {give_type} are not compatible for giving",
                                        node.get_pos())
             )
+
+    def visit_if_syntax(self, node):
+        """Check for preposition type and visit every statement.
+
+        Args:
+            node (IfSyntax): Syntax node.
+        """
+
+        self.visit(node.expr)
+        if node.expr.get_type() != bool_:
+            self.error_handler.error(
+                IncompatibleTypesError(f"Type {node.expr.get_type()} is not compatible for if preposition",
+                                       node.expr.get_pos())
+            )
+
+        for s in node.statements:
+            self.visit(s)

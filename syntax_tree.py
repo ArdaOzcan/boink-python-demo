@@ -61,6 +61,9 @@ class ASTVisitor:
     def visit_give_syntax(self, node):
         pass
 
+    def visit_if_syntax(self, node):
+        pass
+
 
 class SyntaxNode:
     """Base class for all syntax node."""
@@ -505,6 +508,43 @@ class FunctionCallSyntax(SyntaxNode):
         raw += "Arguments: [\n"
         for a in self.args:
             raw += str(a) + ",\n"
+        raw += "],\n"
+
+        indented = ""
+        for l in raw.splitlines():
+            indented += "    " + l + "\n"
+
+        return f"{self.__class__.__name__}: {{\n{indented}}}"
+
+
+class IfSyntax(SyntaxNode):
+    """SyntaxNode that represents an if statement."""
+
+    def __init__(self, token, expr):
+        """Construct an IfSyntax object.
+
+        Args:
+            token (Token): Token of the word 'if'.
+            expr (SyntaxNode): Boolean preposition of the if statement.
+        """
+
+        self.token = token
+        self.expr = expr
+        self.statements = []
+
+    def get_pos(self):
+        return self.token.pos
+
+    def __str__(self):
+        raw = ""
+
+        raw += "Expression: [\n"
+        raw += str(self.expr) + "\n"
+        raw += "],\n"
+
+        raw += "Statements: [\n"
+        for s in self.statements:
+            raw += str(s) + ",\n"
         raw += "],\n"
 
         indented = ""

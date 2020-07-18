@@ -29,7 +29,8 @@ class TokenType(Enum):
     BOOL_TYPE = 20  # bool
     FLOAT_TYPE = 21  # float
     RIGHT_ARROW = 22  # ->
-    GIVE = 23
+    GIVE = 23  # give
+    IF = 24  # if
 
 
 # Dict to hold information about existing keywords and
@@ -42,7 +43,8 @@ KEYWORDS = {"fn": TokenType.FUNC_DEF,
             "true": TokenType.BOOL_LITERAL,
             "bool": TokenType.BOOL_TYPE,
             "float": TokenType.FLOAT_TYPE,
-            "give": TokenType.GIVE}
+            "give": TokenType.GIVE,
+            "if": TokenType.IF}
 
 
 class Token:

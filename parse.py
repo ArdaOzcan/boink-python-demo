@@ -448,6 +448,9 @@ class Parser:
         if self.current_token.token_type == TokenType.GIVE:
             return self.parse_give()
 
+        if self.current_token.token_type == TokenType.IF:
+            return self.parse_if()
+
     def parse_statements(self):
         """Parse a list of statements seperated by newlines
 
@@ -492,3 +495,31 @@ class Parser:
         self.consume(TokenType.EOF)
 
         return program
+
+    def parse_if(self):
+        """Parse an if statement.
+
+        Returns:
+            IfSyntax: SyntaxNode representation of an if statement.
+        """
+
+        token = self.current_token
+
+        self.consume(TokenType.IF)
+        self.consume(TokenType.L_PAR)
+
+        expr = self.parse_expression()
+
+        self.consume(TokenType.R_PAR)
+        self.consume(TokenType.NEW_LINE)
+
+        if_statement = IfSyntax(token, expr)
+
+        statements = self.parse_statements()
+
+        self.consume(TokenType.SEMI_COLON)
+
+        for s in statements:
+            if_statement.statements.append(s)
+
+        return if_statement

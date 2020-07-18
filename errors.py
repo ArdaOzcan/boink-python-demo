@@ -5,6 +5,7 @@ from colr import Colr
 
 
 class Error:
+
     """Base class for all errors."""
 
     def __init__(self, msg, pos):

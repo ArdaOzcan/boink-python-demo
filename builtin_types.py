@@ -181,9 +181,12 @@ class function_(type_):
     def __init__(self, name, val, args):
         super().__init__(name, val)
         self.args = args
+        self.gave = False
+        self.give_val = None
 
-    def call_(self, args):
-        pass
+    def give(self, val):
+        self.gave = True
+        self.give_val = val
 
 
 class float_(type_):
