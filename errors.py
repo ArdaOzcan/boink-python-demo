@@ -45,7 +45,7 @@ class ArgumentMismatchError(Error):
     pass
 
 
-class NotGivenError(Error):
+class NoGiveError(Error):
     pass
 
 

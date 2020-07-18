@@ -226,7 +226,7 @@ class SymbolTableBuilder(ASTVisitor):
 
         if not has_give and give_type is not None:
             self.error_handler.error(
-                NotGivenError(f"Function {repr(node.name.val)} doesn't give any value even though it has a give type of {give_type}",
+                NoGiveError(f"Function {repr(node.name.val)} doesn't give any value even though it has a give type of {give_type}",
                               node.get_pos())
             )
 
