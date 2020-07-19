@@ -279,9 +279,6 @@ class Interpreter(ASTVisitor):
                                       node.statements,
                                       node.args)
 
-    def visit_give_syntax(self, node):
-        return self.visit(node.expr)
-
     def visit_variable_syntax(self, node):
         """Get the variable and return the value.
 
@@ -382,6 +379,10 @@ class Interpreter(ASTVisitor):
 
     def visit_give_syntax(self, node):
         func_symbol = self.call_stack.peek().owner
+        if node.expr is None:
+            func_symbol.give(None)
+            return
+        
         func_symbol.give(self.visit(node.expr))
 
     def visit_if_syntax(self, node):

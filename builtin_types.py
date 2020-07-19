@@ -35,7 +35,7 @@ class type_:
         self.val = val
 
     @classmethod
-    def additionType(cls, other_type, pos):
+    def addition_type(cls, other_type, pos):
         """Return the resulting type from a addition operation with 
         this type and other variable's type or raise and error if it
         is not supported.
@@ -49,7 +49,7 @@ class type_:
             f"{cls} type doesn't support addition", pos))
 
     @classmethod
-    def subtractionType(cls, other_type, pos):
+    def subtraction_type(cls, other_type, pos):
         """Return the resulting type from a subtraction operation with 
         this type and other variable's type or raise and error if it
         is not supported.
@@ -63,7 +63,7 @@ class type_:
             f"{cls} type doesn't support subtraction", pos))
 
     @classmethod
-    def multiplicationType(cls, other_type, pos):
+    def multiplication_type(cls, other_type, pos):
         """Return the resulting type from a multiplication operation with 
         this type and other variable's type or raise and error if it
         is not supported.
@@ -77,7 +77,7 @@ class type_:
             f"{cls} type doesn't support multiplication", pos))
 
     @classmethod
-    def divisionType(cls, other_type, pos):
+    def division_type(cls, other_type, pos):
         """Return the resulting type from a division operation with 
         this type and other variable's type or raise and error if it
         is not supported.
@@ -91,7 +91,7 @@ class type_:
             f"{cls} type doesn't support division", pos))
 
     @classmethod
-    def andType(cls, other_type, pos):
+    def and_type(cls, other_type, pos):
         """Return the resulting type from a and operation with 
         this type and other variable's type or raise and error if it
         is not supported.
@@ -105,7 +105,7 @@ class type_:
             f"{cls} type doesn't support and operation", pos))
 
     @classmethod
-    def orType(cls, other_type, pos):
+    def or_type(cls, other_type, pos):
         """Return the resulting type from a or operation with 
         this type and other variable's type or raise and error if it
         is not supported.
@@ -136,7 +136,7 @@ class int_(type_):
         super().__init__(name, val)
 
     @classmethod
-    def additionType(cls, other_type, pos):
+    def addition_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -156,7 +156,7 @@ class int_(type_):
             f"Types {cls} and {other_type} are not compatible for subtraction", pos))
 
     @classmethod
-    def multiplicationType(cls, other_type, pos):
+    def multiplication_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -166,7 +166,7 @@ class int_(type_):
             f"Types {cls} and {other_type} are not compatible for multiplication", pos))
 
     @classmethod
-    def divisionType(cls, other_type, pos):
+    def division_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -195,7 +195,7 @@ class float_(type_):
         super().__init__(name, val)
 
     @classmethod
-    def additionType(cls, other_type, pos):
+    def addition_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -215,7 +215,7 @@ class float_(type_):
             f"Types {cls} and {other_type} are not compatible for subtraction", pos))
 
     @classmethod
-    def multiplicationType(cls, other_type, pos):
+    def multiplication_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -225,7 +225,7 @@ class float_(type_):
             f"Types {cls} and {other_type} are not compatible for multiplication", pos))
 
     @classmethod
-    def divisionType(cls, other_type, pos):
+    def division_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -241,14 +241,14 @@ class bool_(type_):
         super().__init__(name, val)
 
     @classmethod
-    def andType(cls, other_type, pos):
+    def and_type(cls, other_type, pos):
         if other_type == bool_:
             return bool_
         ErrorHandler.error(IncompatibleTypesError(
             f"Types {cls} and {other_type} are not compatible for and operation", pos))
 
     @classmethod
-    def orType(cls, other_type, pos):
+    def or_type(cls, other_type, pos):
         if other_type == bool_:
             return bool_
         ErrorHandler.error(IncompatibleTypesError(

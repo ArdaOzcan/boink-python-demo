@@ -385,7 +385,12 @@ class SymbolTableBuilder(ASTVisitor):
             node (IfSyntax): Syntax node.
         """
 
-        self.visit(node.expr)
+        if node.expr is not None:
+            self.visit(node.expr)
+            expr_type = node.expr.get_type()
+        else:
+            expr_type = None
+                        
         current_function_symbol = self.current_scope.owner
 
         if current_function_symbol is None:
@@ -397,16 +402,16 @@ class SymbolTableBuilder(ASTVisitor):
 
         give_type = current_function_symbol.give_type
 
-        if give_type is None:
+        if give_type is None and node.expr is not None:
             self.error_handler.error(
                 IncompatibleTypesError(f"'give' is not allowed because function {repr(current_function_symbol.name)} has no return type",
                                        node.get_pos())
             )
             return
 
-        if give_type != node.expr.get_type():
+        if give_type != expr_type:
             self.error_handler.error(
-                IncompatibleTypesError(f"Type {node.expr.get_type()} and {give_type} are not compatible for giving",
+                IncompatibleTypesError(f"Type {expr_type} and {give_type} are not compatible for giving",
                                        node.get_pos())
             )
 

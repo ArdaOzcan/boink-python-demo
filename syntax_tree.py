@@ -71,17 +71,16 @@ class SyntaxNode:
     def get_type(self):
         """Return the type of the syntax if any.
 
-        EXAMPLE:
+        Example:
+            -----------------------------------------
+            (1 + 2)
+            -----------------------------------------
+            BinaryOperationSyntax: <int + int> => get_type(): int
 
-        -----------------------------------------
-        (1 + 2)
-        -----------------------------------------
-        > BinaryOperationSyntax: <int + int> => get_type(): int
-
-        -----------------------------------------
-        (1 / 2)
-        -----------------------------------------
-        > BinaryOperationSyntax: <int / int> => get_type(): float
+            -----------------------------------------
+            (1 / 2)
+            -----------------------------------------
+            BinaryOperationSyntax: <int / int> => get_type(): float
 
 
         Returns:
@@ -171,22 +170,22 @@ class BinaryOperationSyntax(SyntaxNode):
         pos = self.get_pos()
 
         if self.op.token_type == TokenType.PLUS:
-            return lType.additionType(rType, pos)
+            return lType.addition_type(rType, pos)
 
         if self.op.token_type == TokenType.MINUS:
-            return lType.subtractionType(rType, pos)
+            return lType.subtraction_type(rType, pos)
 
         if self.op.token_type == TokenType.STAR:
-            return lType.multiplicationType(rType, pos)
+            return lType.multiplication_type(rType, pos)
 
         if self.op.token_type == TokenType.SLASH:
-            return lType.divisionType(rType, pos)
+            return lType.division_type(rType, pos)
 
         if self.op.token_type == TokenType.AMPERSAND_AMPERSAND:
-            return lType.andType(rType, pos)
+            return lType.and_type(rType, pos)
 
         if self.op.token_type == TokenType.PIPE_PIPE:
-            return lType.orType(rType, pos)
+            return lType.or_type(rType, pos)
 
     def __str__(self):
         raw = ""
@@ -498,7 +497,6 @@ class FunctionCallSyntax(SyntaxNode):
         return self.var.token.pos
 
     def get_type(self):
-        print("Type requested", self.var_type)
         return self.var_type
 
     def __str__(self):
