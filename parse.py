@@ -12,11 +12,16 @@ TYPE_TOKENS = {TokenType.DYNAMIC_TYPE,
                TokenType.FLOAT_TYPE}
 
 # Token types that are for binary operators
-# e.g. +, -, &&, ||
+# e.g. +, -, &&, ||, <=
 BINARY_OPERATOR_TOKENS = {TokenType.PLUS,
                           TokenType.MINUS,
                           TokenType.AMPERSAND_AMPERSAND,
-                          TokenType.PIPE_PIPE}
+                          TokenType.PIPE_PIPE,
+                          TokenType.GREATER,
+                          TokenType.GREATER_EQUALS,
+                          TokenType.LESS,
+                          TokenType.LESS_EQUALS,
+                          TokenType.EQUALS_EQUALS}
 
 
 class Parser:
@@ -251,7 +256,13 @@ class Parser:
 
         node = self.parse_factor()
 
-        while self.current_token.token_type in (TokenType.STAR, TokenType.SLASH):
+        while self.current_token.token_type in (TokenType.STAR, 
+                                                TokenType.SLASH, 
+                                                TokenType.GREATER, 
+                                                TokenType.GREATER_EQUALS,
+                                                TokenType.LESS,
+                                                TokenType.LESS_EQUALS,
+                                                TokenType.EQUALS_EQUALS):
             token = self.current_token
             self.consume(token.token_type)
             node = BinaryOperationSyntax(node, token, self.parse_factor())

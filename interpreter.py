@@ -252,14 +252,13 @@ class Interpreter(ASTVisitor):
 
         self.call_stack.push(ar)
         print(f"------- START OF FUNCTION {func_name} -------")
-        print(self.call_stack)
+        # print(self.call_stack)
 
         for s in func_symbol.val:
             self.visit(s)
             if func_symbol.gave:
+                func_symbol.gave = False
                 break
-
-        func_symbol.gave = True
 
         print(f"-------- END OF FUNCTION {func_name} --------")
         print(self.call_stack)
@@ -327,6 +326,21 @@ class Interpreter(ASTVisitor):
         if node.op.token_type == TokenType.PIPE_PIPE:
             return left or right
 
+        if node.op.token_type == TokenType.GREATER:
+            return left > right
+
+        if node.op.token_type == TokenType.GREATER_EQUALS:
+            return left >= right
+
+        if node.op.token_type == TokenType.LESS:
+            return left < right
+
+        if node.op.token_type == TokenType.LESS_EQUALS:
+            return left <= right
+
+        if node.op.token_type == TokenType.EQUALS_EQUALS:
+            return left == right
+
     def visit_assignment_syntax(self, node):
         """Get the variable and set the value.
 
@@ -378,14 +392,26 @@ class Interpreter(ASTVisitor):
         return node.val
 
     def visit_give_syntax(self, node):
+        """Call give on the current function.
+
+        Args:
+            node (GiveSyntax): Syntax node.
+        """
+        
         func_symbol = self.call_stack.peek().owner
         if node.expr is None:
             func_symbol.give(None)
             return
-        
+
         func_symbol.give(self.visit(node.expr))
 
     def visit_if_syntax(self, node):
+        """Evaluate expression and visit all statements is necessary.
+
+        Args:
+            node (IfSyntax): Syntax node.
+        """
+        
         preposition_val = self.visit(node.expr)
         if preposition_val:
             for s in node.statements:

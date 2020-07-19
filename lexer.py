@@ -31,6 +31,11 @@ class TokenType(Enum):
     RIGHT_ARROW = 22  # ->
     GIVE = 23  # give
     IF = 24  # if
+    GREATER = 25  # >
+    GREATER_EQUALS = 26  # >=
+    LESS = 27  # <
+    LESS_EQUALS = 28  # <=
+    EQUALS_EQUALS = 29  # ==
 
 
 # Dict to hold information about existing keywords and
@@ -172,7 +177,7 @@ class Lexer:
         """
 
         index = 0
-        while index < len(text) - 1:
+        while index < len(text):
             if self.peek(index) != text[index]:
                 return False
 
@@ -202,6 +207,7 @@ class Lexer:
             val = result
             if KEYWORDS[result] == TokenType.BOOL_LITERAL:
                 val = (result == "true")
+                
             return Token(KEYWORDS[result], val, start_pos)
 
         return Token(TokenType.WORD, result, start_pos)
@@ -281,6 +287,11 @@ class Lexer:
             return token
 
         if self.current_char() == '=':
+            if self.is_ahead('=='):
+                start_pos = self.pos
+                self.pos += len('==')
+                return Token(TokenType.EQUALS_EQUALS, '==', start_pos)
+
             token = Token(TokenType.EQUALS, self.current_char(), self.pos)
             self.pos += 1
             return token
@@ -292,6 +303,26 @@ class Lexer:
 
         if self.current_char() == '\n':
             token = Token(TokenType.NEW_LINE, self.current_char(), self.pos)
+            self.pos += 1
+            return token
+
+        if self.current_char() == '>':
+            if self.is_ahead('>='):
+                start_pos = self.pos
+                self.pos += len('>=')
+                return Token(TokenType.GREATER_EQUALS, '>=', start_pos)
+
+            token = Token(TokenType.GREATER, self.current_char(), self.pos)
+            self.pos += 1
+            return token
+
+        if self.current_char() == '<':
+            if self.is_ahead('<='):
+                start_pos = self.pos
+                self.pos += len('<=')
+                return Token(TokenType.LESS_EQUALS, '<=', start_pos)
+
+            token = Token(TokenType.LESS, self.current_char(), self.pos)
             self.pos += 1
             return token
 

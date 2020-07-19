@@ -118,6 +118,23 @@ class type_:
         ErrorHandler.error(IncompatibleTypesError(
             f"{cls} type doesn't support or operation", pos))
 
+    @classmethod
+    def compare_type(cls, other_type, pos):
+        """Return the resulting type from a compare operation with 
+        this type and other variable's type or raise and error if it
+        is not supported.
+
+        Args:
+            other_type (type_): Type of the other variable.
+            pos (int): Position of the statement to use in errors.
+        """
+        
+        if cls != other_type:
+            ErrorHandler.error(IncompatibleTypesError(
+                f"Types {cls} and {other_type} are not compatible for comparison", pos))
+            return
+        return bool_
+
     def __str__(self):
         return f"{self.val}"
 
@@ -146,7 +163,7 @@ class int_(type_):
             f"Types {cls} and {other_type} are not compatible for addition", pos))
 
     @classmethod
-    def subtractionType(cls, other_type, pos):
+    def subtraction_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:
@@ -205,7 +222,7 @@ class float_(type_):
             f"Types {cls} and {other_type} are not compatible for addition", pos))
 
     @classmethod
-    def subtractionType(cls, other_type, pos):
+    def subtraction_type(cls, other_type, pos):
         if other_type == float_:
             return float_
         if other_type == int_:

@@ -165,27 +165,34 @@ class BinaryOperationSyntax(SyntaxNode):
         return self.left.get_pos()
 
     def get_type(self):
-        lType = self.left.get_type()
-        rType = self.right.get_type()
+        l_type = self.left.get_type()
+        r_type = self.right.get_type()
         pos = self.get_pos()
 
         if self.op.token_type == TokenType.PLUS:
-            return lType.addition_type(rType, pos)
+            return l_type.addition_type(r_type, pos)
 
         if self.op.token_type == TokenType.MINUS:
-            return lType.subtraction_type(rType, pos)
+            return l_type.subtraction_type(r_type, pos)
 
         if self.op.token_type == TokenType.STAR:
-            return lType.multiplication_type(rType, pos)
+            return l_type.multiplication_type(r_type, pos)
 
         if self.op.token_type == TokenType.SLASH:
-            return lType.division_type(rType, pos)
+            return l_type.division_type(r_type, pos)
 
         if self.op.token_type == TokenType.AMPERSAND_AMPERSAND:
-            return lType.and_type(rType, pos)
+            return l_type.and_type(r_type, pos)
 
         if self.op.token_type == TokenType.PIPE_PIPE:
-            return lType.or_type(rType, pos)
+            return l_type.or_type(r_type, pos)
+        
+        if self.op.token_type in (TokenType.GREATER,
+                                  TokenType.GREATER_EQUALS,
+                                  TokenType.LESS,
+                                  TokenType.LESS_EQUALS,
+                                  TokenType.EQUALS_EQUALS):
+            return l_type.compare_type(r_type, pos)
 
     def __str__(self):
         raw = ""
