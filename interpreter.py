@@ -254,10 +254,11 @@ class Interpreter(ASTVisitor):
         print(f"------- START OF FUNCTION {func_name} -------")
         # print(self.call_stack)
 
+        func_symbol.gave = False
+        func_symbol.give_val = None
         for s in func_symbol.val:
             self.visit(s)
             if func_symbol.gave:
-                func_symbol.gave = False
                 break
 
         print(f"-------- END OF FUNCTION {func_name} --------")
